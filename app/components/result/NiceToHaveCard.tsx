@@ -1,9 +1,11 @@
 interface Props {
-  items: string[];
+  items?: string[];
+  loading?: boolean;
 }
 
 export default function NiceToHaveCard({
-  items
+  items,
+  loading
 }: Props) {
 
   return (
@@ -20,21 +22,28 @@ export default function NiceToHaveCard({
         </div>
 
         <span className="text-[11px] text-[#aaa] font-mono">
-          {String(items?.length || 0).padStart(2, "0")}
+          {loading ? "—" : String(items?.length || 0).padStart(2, "0")}
         </span>
       </div>
 
-      <div className="flex flex-wrap gap-1.5">
-        {(items || []).map((item, index) => (
-          <span
-            key={index}
-            className="text-xs px-2.5 py-1 bg-blue-50 text-blue-800 rounded-full font-['Inter'] font-medium border-2 border-blue-700"
-          >
-            {item}
-          </span>
-        ))}
-      </div>
-
+      {loading ? (
+        <div className="flex flex-wrap gap-1.5 animate-pulse">
+          <div className="w-20 h-6 bg-neutral-100 rounded-full" />
+          <div className="w-16 h-6 bg-neutral-100 rounded-full" />
+          <div className="w-24 h-6 bg-neutral-100 rounded-full" />
+        </div>
+      ) : (
+        <div className="flex flex-wrap gap-1.5">
+          {(items || []).map((item, index) => (
+            <span
+              key={index}
+              className="text-xs px-2.5 py-1 bg-blue-50 text-blue-800 rounded-full font-['Inter'] font-medium border-2 border-blue-700"
+            >
+              {item}
+            </span>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

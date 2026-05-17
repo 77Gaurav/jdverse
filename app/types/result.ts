@@ -6,6 +6,13 @@ export interface HiddenFlag {
   severity: Severity;
 }
 
+export interface AiSkillMatchDetail {
+  skill: string;
+  matched: boolean;
+  source: "must_have" | "nice_to_have" | "mentioned" | null;
+  note?: string;
+}
+
 export interface ResultData {
   verdict_score: number;
   verdict_short: string;
@@ -13,4 +20,6 @@ export interface ResultData {
   must_haves: string[];
   nice_to_haves: string[];
   hidden_flags: HiddenFlag[];
+  skill_match_score?: number;
+  skill_match_details?: AiSkillMatchDetail[];
 }

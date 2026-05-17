@@ -14,6 +14,11 @@ import MustHaveCard from "@/app/components/result/MustHaveCard";
 import NiceToHaveCard from "@/app/components/result/NiceToHaveCard";
 import RedFlagsCard from "@/app/components/result/RedFlagsCard";
 import ActualIntent from "@/app/components/result/ActualIntent";
+import SkillMatchCard from "@/app/components/result/SkillMatchCard";
+
+
+import SkillCategoryTabs from "@/app/components/skills/SkillCategoryTabs"
+
 
 import { SAMPLE_JD } from "@/app/constants/sampleJD";
 
@@ -26,14 +31,11 @@ export default function Home() {
 
   const [jd, setjd] = useState("");
   const [phase, setPhase] = useState("input");
-  const [result, setResult] =
-    useState<ResultData | null>(null);
+  const [result, setResult] = useState<ResultData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [theme, setTheme] = useState<'dark' | 'light'>('light');
 
-  const [loading, setLoading] =
-    useState(false);
-
-  const [theme, setTheme] =
-    useState<'dark' | 'light'>('light');
+  const [selected,setSelected] = useState<string[]>([]);
 
   const textareaRef =
     useRef<HTMLTextAreaElement>(null);
@@ -41,6 +43,8 @@ export default function Home() {
   const charCount = jd.length;
 
   async function runCheck() {
+    setPhase("result");
+    setLoading(true);
 
     const localFlags = detectFlags(jd);
 
@@ -49,7 +53,7 @@ export default function Home() {
       headers: {
         "Content-Type": "application/json"
       },
-      body: JSON.stringify({ jd }),
+      body: JSON.stringify({ jd, selectedSkills: selected }),
     });
 
     const parsed = await response.json();
@@ -60,7 +64,7 @@ export default function Home() {
     );
 
     setResult(parsed);
-    setPhase("result");
+    setLoading(false);
   }
 
   function reset() {
@@ -82,9 +86,9 @@ export default function Home() {
   }, [theme]);
 
   return (
-    <div className="font-['Syne'] bg-background text-foreground min-h-screen">
+    <div className="font-['Inter'] bg-background text-foreground min-h-screen">
 
-      <div className='w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-auto font-syne px-4'>
+      <div className='w-full max-w-sm sm:max-w-xl md:max-w-2xl lg:max-w-4xl mx-auto px-4'>
 
         <Navbar
           theme={theme}
@@ -100,6 +104,11 @@ export default function Home() {
         {phase === "input" && (
           <>
             <Hero />
+
+            <SkillCategoryTabs
+              selected={selected}
+              setSelected={setSelected}
+            />
 
             <JDToolbar loadSample={()=>{setjd(SAMPLE_JD)}}/>
 
@@ -119,31 +128,41 @@ export default function Home() {
           </>
         )}
 
-        {phase === "result" && result && (
+        {phase === "result" && (
           <>
-            <VerdictCard result={result} />
+            <VerdictCard result={result || undefined} loading={loading} />
 
             <ActualIntent
-              text={result.what_they_actually_want}
+              text={result?.what_they_actually_want}
+              loading={loading}
             />
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
 
               <MustHaveCard
-                items={result.must_haves}
+                items={result?.must_haves}
+                loading={loading}
               />
 
               <NiceToHaveCard
-                items={result.nice_to_haves}
+                items={result?.nice_to_haves}
+                loading={loading}
+              />
+
+              <SkillMatchCard
+                result={result || undefined}
+                loading={loading}
               />
 
               <RedFlagsCard
-                flags={result.hidden_flags}
+                flags={result?.hidden_flags}
                 theme={theme}
+                loading={loading}
               />
 
             </div>
             <Footer reset={reset} theme={theme}/>
+            <div className="w-full h-5"></div>
           </>
         )}
       </div>

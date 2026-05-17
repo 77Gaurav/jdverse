@@ -1,12 +1,30 @@
 import { ResultData } from "@/app/types/result";
 
 interface Props {
-  result: ResultData;
+  result?: ResultData;
+  loading?: boolean;
 }
 
 export default function VerdictCard({
-  result
+  result,
+  loading
 }: Props) {
+
+  if (loading || !result) {
+    return (
+      <div className="flex flex-col sm:flex-row items-start sm:items-center gap-2 border-2 border-neutral-200 rounded-lg px-3 py-2 mb-2 animate-pulse">
+        <div className="flex items-center gap-2 mx-auto sm:mx-2">
+          <div className="w-16 h-10 bg-neutral-100 rounded" />
+          <div className="w-8 h-4 bg-neutral-100 rounded" />
+        </div>
+        <div className="sm:mx-4 flex-1 space-y-2 w-full">
+          <div className="w-16 h-5 bg-neutral-100 rounded mx-auto sm:mx-0" />
+          <div className="w-full h-4 bg-neutral-100 rounded" />
+          <div className="w-48 h-4 bg-neutral-100 rounded" />
+        </div>
+      </div>
+    );
+  }
 
   const scoreColor =
     result.verdict_score >= 7

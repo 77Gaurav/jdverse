@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const GEMINI_MODEL = 'gemini-3-flash-preview';
+const GEMINI_MODEL = 'gemma-4-31b-it';
 
 const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
@@ -50,9 +50,61 @@ export async function POST(req: NextRequest) {
             },
         ],
         generationConfig: {
-            temperature: 0.2,       // lower = more deterministic JSON
+            temperature: 0.2,
             maxOutputTokens: 4096,
-            responseMimeType: 'application/json', // tells Gemini to return raw JSON, no markdown fences
+            responseMimeType: 'application/json',
+            responseJsonSchema: {
+                type: 'object',
+                properties: {
+                    must_haves: {
+                        type: 'array',
+                        items: { type: 'string' },
+                    },
+                    nice_to_haves: {
+                        type: 'array',
+                        items: { type: 'string' },
+                    },
+                    hidden_flags: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                title: { type: 'string' },
+                                detail: { type: 'string' },
+                                severity: { type: 'string', enum: ['critical', 'warn'] },
+                            },
+                            required: ['title', 'detail', 'severity'],
+                        },
+                    },
+                    verdict_short: { type: 'string' },
+                    verdict_score: { type: 'number' },
+                    what_they_actually_want: { type: 'string' },
+                    skill_match_score: { type: 'number', nullable: true },
+                    skill_match_details: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                skill: { type: 'string' },
+                                matched: { type: 'boolean' },
+                                source: { type: 'string', nullable: true },
+                                note: { type: 'string' },
+                            },
+                            required: ['skill', 'matched', 'source', 'note'],
+                        },
+                    },
+                },
+                required: [
+                    'must_haves',
+                    'nice_to_haves',
+                    'hidden_flags',
+                    'verdict_short',
+                    'verdict_score',
+                    'what_they_actually_want',
+                    'skill_match_score',
+                    'skill_match_details',
+                ],
+            },
         },
     };
 

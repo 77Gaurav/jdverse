@@ -11,7 +11,7 @@ export default function JDTextarea({
   jd,
   setjd,
   charCount,
-  textareaRef
+  textareaRef,
 }: Props) {
   return (
     <div className="input flex justify-center mt-5 relative">
@@ -23,8 +23,16 @@ export default function JDTextarea({
         value={jd}
       />
 
-      <div className="absolute bottom-2 sm:bottom-1 right-4 sm:right-10 text-xs sm:text-sm text-neutral-400">
-        {charCount} chars
+      <div className="absolute bottom-2 flex justify-end gap-3 right-10 ">
+        <div
+          className={`text-sm sm:text-base font-['Inter'] ml-4 ${charCount < 50 ? "text-red-500" : "text-green-500"}`}
+        >
+          {charCount < 50 ? "Needs more text" : `Ready`}
+        </div>
+
+        <div className="text-neutral-400 dark:text-white">
+          {charCount} chars
+        </div>
       </div>
     </div>
   );

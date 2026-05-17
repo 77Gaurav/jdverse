@@ -12,13 +12,7 @@ export default function SubmitBar({
   onSubmit
 }: Props) {
   return (
-    <div className="submit-action mt-5 flex items-center justify-between flex-wrap gap-3">
-
-      <div className={`text-sm sm:text-base font-['Inter'] ml-4 ${charCount < 50 ? "text-red-500" : "text-green-500"}`}>
-        {charCount < 50
-          ? "Needs more text"
-          : `Ready · ${charCount} chars`}
-      </div>
+    <div className="submit-action mt-5 flex items-center justify-end flex-wrap gap-3">
 
       <button
         className='px-4 py-2 border rounded-full cursor-pointer text-sm sm:text-base shadow-md'

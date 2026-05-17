@@ -103,6 +103,7 @@ export default function Home() {
               setjd={setjd}
               charCount={charCount}
               textareaRef={textareaRef}
+              theme={theme}
             />
 
             <SubmitBar

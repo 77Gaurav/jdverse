@@ -1,10 +1,11 @@
-import { RefObject } from "react";
+import { RefObject, useState, useEffect } from "react";
 
 interface Props {
   jd: string;
   setjd: (value: string) => void;
   charCount: number;
   textareaRef: RefObject<HTMLTextAreaElement | null>;
+  theme: "dark" | "light";
 }
 
 export default function JDTextarea({
@@ -12,28 +13,85 @@ export default function JDTextarea({
   setjd,
   charCount,
   textareaRef,
+  theme,
 }: Props) {
+  const [expanded, setExpanded] = useState(false);
+
+  useEffect(() => {
+    const handleEsc = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') setExpanded(false);
+    };
+    document.addEventListener('keydown', handleEsc);
+    return () => document.removeEventListener('keydown', handleEsc);
+  }, []);
+
+  const t = theme === 'dark';
+  const scrollbarClasses =
+    `[&::-webkit-scrollbar]:w-2.5 [&::-webkit-scrollbar-track]:bg-transparent [&::-webkit-scrollbar-thumb]:bg-gradient-to-b [&::-webkit-scrollbar-thumb]:from-neutral-400 [&::-webkit-scrollbar-thumb]:to-neutral-300 [&::-webkit-scrollbar-thumb]:rounded-full [&::-webkit-scrollbar-thumb]:border-2 [&::-webkit-scrollbar-thumb]:border-transparent [&::-webkit-scrollbar-thumb]:bg-clip-content hover:[&::-webkit-scrollbar-thumb]:from-neutral-500 hover:[&::-webkit-scrollbar-thumb]:to-neutral-400 ${t ? '[&::-webkit-scrollbar-thumb]:from-neutral-600 [&::-webkit-scrollbar-thumb]:to-neutral-700 hover:[&::-webkit-scrollbar-thumb]:from-neutral-500 hover:[&::-webkit-scrollbar-thumb]:to-neutral-600' : ''}`;
+
   return (
     <div className="input flex justify-center mt-5 relative">
       <textarea
-        className="w-full border h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter']"
+        className={`w-full border h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter'] overflow-y-auto resize-none ${scrollbarClasses}`}
         placeholder="Paste the full job description here : Hiring for FullStack Engineer who understands React, NextJS ..."
         onChange={(e) => setjd(e.target.value)}
         ref={textareaRef}
         value={jd}
       />
 
+      <button
+        onClick={() => setExpanded(true)}
+        className={`absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-lg ${t ? 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700'} transition-all cursor-pointer`}
+        title="Expand"
+      >
+        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+        </svg>
+      </button>
+
       <div className="absolute bottom-2 flex justify-end gap-3 right-10 ">
         <div
           className={`text-sm sm:text-base font-['Inter'] ml-4 ${charCount < 50 ? "text-red-500" : "text-green-500"}`}
         >
-          {charCount < 50 ? "Needs more text" : `Ready`}
+          {charCount < 50 ? "Needs more text" : "Ready"}
         </div>
 
-        <div className="text-neutral-400 dark:text-white">
+        <div className={t ? 'text-white' : 'text-neutral-400'}>
           {charCount} chars
         </div>
       </div>
+
+      {/* ── Modal ── */}
+      {expanded && (
+        <>
+          <div className={`fixed inset-0 ${t ? 'bg-black/30' : 'bg-black/5'} backdrop-blur-sm z-40`} onClick={() => setExpanded(false)} />
+          <div className={`fixed inset-0 m-auto w-[60vw] h-[70vh] ${t ? 'bg-neutral-900/90 border-neutral-700' : 'bg-white/80 border-neutral-200'} backdrop-blur-2xl rounded-2xl shadow-2xl border p-5 z-50 popIn font-['Inter']`}>
+            <div className={`flex justify-between items-center mb-4 pb-3 border-b ${t ? 'border-neutral-700' : 'border-neutral-200'}`}>
+              <h3 className={`text-lg font-semibold ${t ? 'text-white' : 'text-neutral-800'} tracking-wide`}>Job Description</h3>
+              <div className="flex items-center gap-2">
+                <span className={`text-sm font-medium px-3 py-1 rounded-full ${t ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-600'}`}>{charCount} chars</span>
+                <button onClick={() => setExpanded(false)} className={`text-sm font-bold px-3 py-1.5 rounded-lg ${t ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white border-neutral-600' : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-800 border-neutral-300'} transition-all cursor-pointer border shadow-sm`}>ESC</button>
+              </div>
+            </div>
+            <textarea
+              className={`w-full h-[calc(100%-60px)] p-4 rounded-xl text-sm font-['Inter'] overflow-y-auto resize-none border ${t ? 'border-neutral-700 bg-neutral-800 text-neutral-100' : 'border-neutral-200 bg-white text-neutral-900'} ${scrollbarClasses}`}
+              placeholder="Paste the full job description here ..."
+              onChange={(e) => setjd(e.target.value)}
+              value={jd}
+              autoFocus
+            />
+          </div>
+          <style>{`
+            @keyframes popIn {
+              0% { opacity: 0; transform: scale(0.85); }
+              100% { opacity: 1; transform: scale(1); }
+            }
+            .popIn {
+              animation: popIn 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+            }
+          `}</style>
+        </>
+      )}
     </div>
   );
 }

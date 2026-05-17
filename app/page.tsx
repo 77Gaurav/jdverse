@@ -90,7 +90,7 @@ export default function Home() {
           <>
             <Hero />
 
-            <SkillCategoryTabs selected={selected} setSelected={setSelected} />
+            <SkillCategoryTabs selected={selected} setSelected={setSelected} theme={theme} />
 
             <JDToolbar
               loadSample={() => {

@@ -25,25 +25,34 @@ export default function SkillCategoryTabs({selected,setSelected,theme}:Props){
   return (
     <div className="w-full">
       {/* ── Header ── */}
-      <div className="flex items-start justify-between mb-8">
-        <div className="flex items-start gap-3">
-          <div>
-            <h2 className={`text-xl font-semibold ${theme==='dark' ? 'text-white' : 'text-gray-900'}`}>What are your skills?</h2>
-            <p className={`text-sm ${theme==='dark' ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Select the skills you have experience with. We&apos;ll help match you to the right opportunities.</p>
+      <div className="flex flex-col mb-8">
+        <div className="flex flex-col sm:flex-row items-start justify-between gap-3">
+          <div className="flex items-start gap-3">
+            <div>
+              <h2 className={`text-xl font-semibold ${theme==='dark' ? 'text-white' : 'text-gray-900'}`}>What are your skills?</h2>
+              <p className={`text-sm ${theme==='dark' ? 'text-gray-400' : 'text-gray-500'} mt-1`}>Select the skills you have experience with. We&apos;ll help match you to the right opportunities.</p>
+            </div>
+          </div>
+
+          <div className={`hidden sm:flex items-center gap-2 px-3.5 py-1.5 rounded-full ${theme==='dark' ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'} border shrink-0`}>
+            <span className="relative flex w-2 h-2">
+              <span className="absolute inline-flex w-full h-full bg-green-500 rounded-full opacity-75 animate-ping" />
+              <span className="relative inline-flex w-2 h-2 bg-green-500 rounded-full" />
+            </span>
+            <span className={`text-sm font-medium ${theme==='dark' ? 'text-green-400' : 'text-green-700'}`}>{selected.length} Skills</span>
           </div>
         </div>
-
-        <div className={`flex items-center gap-2 px-3.5 py-1.5 rounded-full ${theme==='dark' ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'} border shrink-0`}>
+        <div className={`sm:hidden flex items-center gap-2 px-3.5 py-1.5 rounded-full mt-3 ${theme==='dark' ? 'bg-green-900/20 border-green-800' : 'bg-green-50 border-green-200'} border w-fit`}>
           <span className="relative flex w-2 h-2">
             <span className="absolute inline-flex w-full h-full bg-green-500 rounded-full opacity-75 animate-ping" />
             <span className="relative inline-flex w-2 h-2 bg-green-500 rounded-full" />
           </span>
-          <span className={`text-sm font-medium ${theme==='dark' ? 'text-green-400' : 'text-green-700'}`}>{selected.length} skills selected</span>
+          <span className={`text-sm font-medium ${theme==='dark' ? 'text-green-400' : 'text-green-700'}`}>{selected.length} Skills</span>
         </div>
       </div>
 
       {/* ── Category Cards (Bento Grid) ── */}
-      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mb-10">
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-3 sm:gap-4 mb-10">
         {loading
           ? Array.from({ length: 6 }).map((_, i) => (
               <div key={i} className={`rounded-xl border ${theme==='dark' ? 'border-neutral-700 bg-neutral-800' : 'border-neutral-200 bg-white'} p-4 pb-10 animate-pulse`}>

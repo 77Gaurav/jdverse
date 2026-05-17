@@ -32,7 +32,7 @@ export default function JDTextarea({
   return (
     <div className="input flex justify-center mt-5 relative">
       <textarea
-        className={`w-full border h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter'] overflow-y-auto resize-none ${scrollbarClasses}`}
+        className={`w-full border ${t ? 'border-neutral-700 shadow-black/20 hover:bg-neutral-800/50 placeholder:text-neutral-500' : 'border-neutral-200/80 shadow-black/5 hover:bg-neutral-50 placeholder:text-neutral-400'} shadow-lg h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter'] overflow-y-auto resize-none transition-colors duration-500 ${scrollbarClasses}`}
         placeholder="Paste the full job description here : Hiring for FullStack Engineer who understands React, NextJS ..."
         onChange={(e) => setjd(e.target.value)}
         ref={textareaRef}
@@ -41,11 +41,13 @@ export default function JDTextarea({
 
       <button
         onClick={() => setExpanded(true)}
-        className={`absolute top-2 right-2 w-7 h-7 flex items-center justify-center rounded-lg ${t ? 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700'} transition-all cursor-pointer`}
+        className={`absolute top-2 right-5 w-7 h-7 flex items-center justify-center rounded-lg ${t ? 'bg-neutral-800 text-neutral-400 hover:bg-neutral-700 hover:text-white' : 'bg-neutral-100 text-neutral-500 hover:bg-neutral-200 hover:text-neutral-700'} transition-all cursor-pointer`}
         title="Expand"
       >
-        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-          <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 3.75v4.5m0-4.5h4.5m-4.5 0L9 9M3.75 20.25v-4.5m0 4.5h4.5m-4.5 0L9 15M20.25 3.75h-4.5m4.5 0v4.5m0-4.5L15 9m5.25 11.25h-4.5m4.5 0v-4.5m0 4.5L15 15" />
+        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
+          <path d="M12 6h-6a2 2 0 0 0 -2 2v10a2 2 0 0 0 2 2h10a2 2 0 0 0 2 -2v-6" />
+          <path d="M11 13l9 -9" />
+          <path d="M15 4h5v5" />
         </svg>
       </button>
 
@@ -65,16 +67,16 @@ export default function JDTextarea({
       {expanded && (
         <>
           <div className={`fixed inset-0 ${t ? 'bg-black/30' : 'bg-black/5'} backdrop-blur-sm z-40`} onClick={() => setExpanded(false)} />
-          <div className={`fixed inset-0 m-auto w-[60vw] h-[70vh] ${t ? 'bg-neutral-900/90 border-neutral-700' : 'bg-white/80 border-neutral-200'} backdrop-blur-2xl rounded-2xl shadow-2xl border p-5 z-50 popIn font-['Inter']`}>
-            <div className={`flex justify-between items-center mb-4 pb-3 border-b ${t ? 'border-neutral-700' : 'border-neutral-200'}`}>
+          <div className={`fixed inset-0 m-auto w-[90vw] sm:w-[60vw] h-[70vh] ${t ? 'bg-neutral-900/90 border-neutral-700/80 shadow-black/40' : 'bg-white/95 border-neutral-200/80 shadow-black/10'} backdrop-blur-2xl rounded-2xl shadow-2xl border p-5 z-50 popIn font-['Inter']`}>
+            <div className={`flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b ${t ? 'border-neutral-700' : 'border-neutral-200'}`}>
               <h3 className={`text-lg font-semibold ${t ? 'text-white' : 'text-neutral-800'} tracking-wide`}>Job Description</h3>
               <div className="flex items-center gap-2">
-                <span className={`text-sm font-medium px-3 py-1 rounded-full ${t ? 'bg-neutral-800 text-neutral-300' : 'bg-neutral-100 text-neutral-600'}`}>{charCount} chars</span>
+                <span className={`text-sm font-medium px-3 py-1 rounded-full ${t ? 'bg-neutral-800' : 'bg-neutral-100'} ${charCount < 50 ? 'text-red-500' : 'text-green-600'}`}>{charCount} chars</span>
                 <button onClick={() => setExpanded(false)} className={`text-sm font-bold px-3 py-1.5 rounded-lg ${t ? 'bg-neutral-800 hover:bg-neutral-700 text-neutral-300 hover:text-white border-neutral-600' : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-600 hover:text-neutral-800 border-neutral-300'} transition-all cursor-pointer border shadow-sm`}>ESC</button>
               </div>
             </div>
             <textarea
-              className={`w-full h-[calc(100%-60px)] p-4 rounded-xl text-sm font-['Inter'] overflow-y-auto resize-none border ${t ? 'border-neutral-700 bg-neutral-800 text-neutral-100' : 'border-neutral-200 bg-white text-neutral-900'} ${scrollbarClasses}`}
+              className={`w-full h-[calc(100%-60px)] p-4 rounded-xl text-sm font-['Inter'] overflow-y-auto resize-none border ${t ? 'border-neutral-700 bg-neutral-800 text-neutral-100 placeholder:text-neutral-500' : 'border-neutral-200 bg-white text-neutral-900 placeholder:text-neutral-400'} ${scrollbarClasses}`}
               placeholder="Paste the full job description here ..."
               onChange={(e) => setjd(e.target.value)}
               value={jd}

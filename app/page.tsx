@@ -7,6 +7,7 @@ import Hero from "@/app/components/Hero";
 import JDTextarea from "@/app/components/JDTextarea";
 import JDToolbar from "@/app/components/JDToolbar";
 import SubmitBar from "@/app/components/SubmitBar";
+import ExampleScenario from "@/app/components/ExampleScenario";
 import Footer from "@/app/components/Footer";
 
 import VerdictCard from "@/app/components/result/VerdictCard";
@@ -110,7 +111,10 @@ export default function Home() {
               charCount={charCount}
               loading={loading}
               onSubmit={runCheck}
+              theme={theme}
             />
+
+            <ExampleScenario theme={theme} />
 
             <div className="w-full h-10"></div>
           </>

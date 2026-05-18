@@ -32,7 +32,7 @@ export default function JDTextarea({
   return (
     <div className="input flex justify-center mt-5 relative max-w-full overflow-x-hidden">
       <textarea
-        className={`w-full border ${t ? 'border-neutral-700 shadow-black/20 hover:bg-neutral-800/50 placeholder:text-neutral-500' : 'border-neutral-200/80 shadow-black/5 hover:bg-neutral-50 placeholder:text-neutral-400'} shadow-lg h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter'] overflow-y-auto resize-none transition-colors duration-500 ${scrollbarClasses}`}
+        className={`w-full border-3 ${t ? 'border-neutral-700 shadow-black/40 hover:border-neutral-600 hover:bg-neutral-800/50 placeholder:text-neutral-500 shadow-[0_8px_30px_rgb(0,0,0,0.35)]' : 'border-neutral-200/80 shadow-black/5 hover:bg-neutral-50 placeholder:text-neutral-400'} shadow-lg h-40 sm:h-50 p-4 sm:p-5 rounded-xl text-sm sm:text-base font-['Inter'] overflow-y-auto resize-none transition-colors duration-2000 ${scrollbarClasses}`}
         placeholder="Paste the full job description here : Hiring for FullStack Engineer who understands React, NextJS ..."
         onChange={(e) => setjd(e.target.value)}
         ref={textareaRef}
@@ -67,7 +67,7 @@ export default function JDTextarea({
       {expanded && (
         <>
           <div className={`fixed inset-0 ${t ? 'bg-black/30' : 'bg-black/5'} backdrop-blur-sm z-40`} onClick={() => setExpanded(false)} />
-          <div className={`fixed inset-0 m-auto w-[90vw] sm:w-[60vw] h-[70vh] max-w-full overflow-x-hidden ${t ? 'bg-neutral-900/90 border-neutral-700/80 shadow-black/40' : 'bg-white/95 border-neutral-200/80 shadow-black/10'} backdrop-blur-2xl rounded-2xl shadow-2xl border p-5 z-50 popIn font-['Inter']`}>
+          <div className={`fixed inset-0 m-auto w-[90vw] sm:w-[60vw] h-[85vh] max-w-full overflow-x-hidden ${t ? 'bg-neutral-900/90 border-neutral-700/80 shadow-black/40' : 'bg-white/95 border-neutral-200/80 shadow-black/10'} backdrop-blur-2xl rounded-2xl shadow-2xl border p-5 z-50 popIn font-['Inter']`}>
             <div className={`flex flex-wrap items-center justify-between gap-2 mb-4 pb-3 border-b ${t ? 'border-neutral-700' : 'border-neutral-200'}`}>
               <h3 className={`text-lg font-semibold ${t ? 'text-white' : 'text-neutral-800'} tracking-wide`}>Job Description</h3>
               <div className="flex items-center gap-2">

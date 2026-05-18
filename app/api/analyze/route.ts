@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 
-const GEMINI_MODEL = 'gemma-4-31b-it';
-
-const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
+const GEMINI_MODELS = ['gemini-2.5-flash-lite', 'gemini-2.5-flash'];
 
 export async function POST(req: NextRequest) {
     const { jd, selectedSkills } = await req.json();
@@ -56,14 +54,8 @@ export async function POST(req: NextRequest) {
             responseJsonSchema: {
                 type: 'object',
                 properties: {
-                    must_haves: {
-                        type: 'array',
-                        items: { type: 'string' },
-                    },
-                    nice_to_haves: {
-                        type: 'array',
-                        items: { type: 'string' },
-                    },
+                    must_haves: { type: 'array', items: { type: 'string' } },
+                    nice_to_haves: { type: 'array', items: { type: 'string' } },
                     hidden_flags: {
                         type: 'array',
                         items: {
@@ -79,7 +71,7 @@ export async function POST(req: NextRequest) {
                     verdict_short: { type: 'string' },
                     verdict_score: { type: 'number' },
                     what_they_actually_want: { type: 'string' },
-                    skill_match_score: { type: 'number', nullable: true },
+                    skill_match_score: { type: 'number' },
                     skill_match_details: {
                         type: 'array',
                         items: {
@@ -87,7 +79,7 @@ export async function POST(req: NextRequest) {
                             properties: {
                                 skill: { type: 'string' },
                                 matched: { type: 'boolean' },
-                                source: { type: 'string', nullable: true },
+                                source: { type: 'string' },
                                 note: { type: 'string' },
                             },
                             required: ['skill', 'matched', 'source', 'note'],
@@ -95,43 +87,53 @@ export async function POST(req: NextRequest) {
                     },
                 },
                 required: [
-                    'must_haves',
-                    'nice_to_haves',
-                    'hidden_flags',
-                    'verdict_short',
-                    'verdict_score',
-                    'what_they_actually_want',
-                    'skill_match_score',
-                    'skill_match_details',
+                    'must_haves', 'nice_to_haves', 'hidden_flags',
+                    'verdict_short', 'verdict_score', 'what_they_actually_want',
+                    'skill_match_score', 'skill_match_details',
                 ],
             },
         },
     };
 
-    const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(geminiBody),
-    });
+    let lastError: string | null = null;
 
-    const data = await response.json();
+    for (const model of GEMINI_MODELS) {
+        const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    if(!response.ok){
-        console.error('Gemini API error',data);
-        return NextResponse.json({error:data?.error?.message || 'Gemini API error'},{status:response.status});
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(geminiBody),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            const msg = data?.error?.message || 'Gemini API error';
+            console.error(`Gemini API error with ${model}:`, msg);
+            lastError = msg;
+            if (response.status === 500 || response.status === 404 || response.status === 400) {
+                continue;
+            }
+            return NextResponse.json({ error: msg }, { status: response.status });
+        }
+
+        const raw: string = data?.candidates?.[0]?.content?.parts?.[0].text ?? '';
+        if (!raw) {
+            lastError = 'Empty AI response';
+            console.error(`Empty response from ${model}`);
+            continue;
+        }
+
+        try {
+            const parsed = JSON.parse(raw);
+            return NextResponse.json(parsed);
+        } catch (error) {
+            console.error(`Raw output from ${model}:`, raw, error);
+            lastError = 'Invalid response from gemini';
+            continue;
+        }
     }
-    
-    const raw : string = data?.candidates?.[0]?.content?.parts?.[0].text ?? '';
-    if(!raw){
-        return NextResponse.json({error : 'Empty AI response'},{status:500});
-    }
 
-
-    try{
-        const parsed = JSON.parse(raw);
-        return NextResponse.json(parsed);
-    } catch(error){  
-        console.error('Raw Gemini Output :', raw, error);
-        return NextResponse.json({ error: 'Invalid response from gemini', raw }, { status: 500 });
-    }
+    return NextResponse.json({ error: lastError || 'All models failed' }, { status: 500 });
 }

@@ -45,17 +45,16 @@ export default function VerdictCard({
 
       <div className="text-center flex justify-center items-center gap-2 max-w-xl mx-auto sm:mx-2">
         <div
-          className="text-3xl font-bold"
+          className="font-bold"
           style={{ color: scoreColor }}
         >
-          {result.verdict_score}
+          <span className="text-4xl lg:text-3xl">{result.verdict_score}</span>
+          <span className="text-xl lg:text-lg">/10</span>
         </div>
-
-        <div className="text-lg mt-2">/ 10</div>
       </div>
 
-      <div className="mt-2 sm:mt-0 sm:mx-4">
-        <p className="font-bold text-lg font-['Inter'] text-center leading-relaxed mb-3">
+      <div className="mt-2 sm:mt-0 sm:mx-4 text-center">
+        <p className="font-bold text-lg font-['Inter'] leading-relaxed mb-3">
           Verdict
         </p>
 

@@ -158,7 +158,7 @@ export default function SkillSelection({skill,selected,setSelected,theme}:Props)
               <button onClick={() => setOpen(false)} className={`text-sm font-bold px-3 py-1.5 rounded-lg ${theme==='dark' ? 'bg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-600' : 'bg-neutral-100 hover:bg-white/50 text-gray-600 border-neutral-300'} transition-all cursor-pointer border shadow-sm`}>ESC</button>
             </div>
           </div>
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2 overflow-hidden">
+          <div className="grid grid-cols-1 sm:grid-cols-3 md:grid-cols-4 gap-1.5 sm:gap-2 overflow-hidden">
             {filteredSkills.map((item:Skill)=>{
               const isSelected = selected.includes(item.label);
               return(
